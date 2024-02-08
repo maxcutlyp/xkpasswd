@@ -2,8 +2,166 @@
 <html>
 <head>
     <title>xkpasswd</title>
+    <script src="/static/script.js"></script>
+    <link rel="stylesheet" href="/static/style.css"></script>
 </head>
 <body>
-    <h1>Password Generator</h1>
+    <header>
+        <h1>Password Generator</h1>
+        <p>A remake of <a href="http://web.archive.org/web/20240130164133/https://xkpasswd.net/s/">the original xkpasswd.net</a>.</p>
+        <p>Check out the source code on <a href="https://github.com/maxcutlyp/xkpasswd">GitHub</a>.</p>
+    </header>
+
+    <fieldset>
+        <legend>Settings</legend>
+        <details>
+            <summary>Words</summary>
+            <label for="num-words">Number of Words:</label>
+            <select id="num-words">
+                {% for i in range(2, 10 + 1) %}
+                    <option value="{{ i }}" {{ "selected" if i == 3 }}>{{ i }}</option>
+                {% endfor %}
+            </select>
+            <label for="min-word-length">Minimum Length:</label>
+            <select id="min-word-length">
+                {% for i in range(4, 12 + 1) %}
+                    <option value="{{ i }}" {{ "selected" if i == 4 }}>{{ i }}</option>
+                {% endfor %}
+            </select>
+            <label for="max-word-length">Maximum Length:</label>
+            <select id="max-word-length">
+                {% for i in range(4, 12 + 1) %}
+                    <option value="{{ i }}" {{ "selected" if i == 8 }}>{{ i }}</option>
+                {% endfor %}
+            </select>
+        </details>
+
+        <details>
+            <summary>Transformations</summary>
+            <label for="case-transformation">Case Transformation:</label>
+            <select id="case-transformation">
+                <option value="NONE">-none-</option>
+                <option value="ALTERNATE" selected>alternating WORD case</option>
+                <option value="CAPITALISE">Capitalise First Letter</option>
+                <option value="INVERT">cAPITALISE eVERY lETTER eXCEPT tHE fIRST</option>
+                <option value="LOWER">lower case</option>
+                <option value="UPPER">UPPER CASE</option>
+                <option value="RANDOM">EVERY word randomly CAPITALISED or NOT</option>
+            </select>
+        </details>
+
+        <details>
+            <summary>Separator</summary>
+            <label for="sep-type">Type:</label>
+            <select id="sep-type">
+                <option value="NONE">-none-</option>
+                <option value="specified">Specified Character</option>
+                <option value="RANDOM" selected>Random Character</option>
+            </select>
+            <br />
+            <label for="sep-alphabet" data-shown-for="RANDOM" class="break-before">Separator Alphabet:</label>
+            <div class="inlineish" id="sep-alphabet" data-shown-for="RANDOM">
+                {% for sep in default_seps %}
+                    <input type="text" size="1" maxlength="1" class="sep-alphabet-item" value="{{ sep }}"/>
+                {% endfor %}
+            </div>
+            <input type="button" value="+" data-shown-for="RANDOM" onclick="add_textbox('sep-alphabet')" />
+            <label for="sep-char" data-shown-for="specified">Character:</label>
+            <input id="sep-char" type="text" size="1" maxlength="1" value="-" data-shown-for="specified"/>
+        </details>
+
+        <details>
+            <summary>Padding Digits</summary>
+            <label for="digits-before">Digit(s) Before:</label>
+            <select id="digits-before">
+                {% for i in range(0, 5 + 1) %}
+                    <option value="{{ i }}" {{ "selected" if i == 2 }}>{{ i }}</option>
+                {% endfor %}
+            </select>
+            <label for="digits-after">Digit(s) After:</label>
+            <select id="digits-after">
+                {% for i in range(0, 5 + 1) %}
+                    <option value="{{ i }}" {{ "selected" if i == 2 }}>{{ i }}</option>
+                {% endfor %}
+            </select>
+        </details>
+
+        <details>
+            <summary>Padding Symbols</summary>
+            <label for="pad-type">Padding Type:</label>
+            <select id="pad-type">
+                <option value="NONE">-none-</option>
+                <option value="FIXED" selected>Fixed</option>
+                <option value="ADAPTIVE">Adaptive</option>
+            </select>
+            <label for="pad-to-length" data-shown-for="ADAPTIVE">Pad to Length:</label>
+            <input type="number" data-shown-for="ADAPTIVE" id="pad-to-length" value="32" size="3" min="8" max="999">
+            <label for="symbols-before" data-shown-for="FIXED">Symbol(s) Before:</label>
+            <select id="symbols-before" data-shown-for="FIXED">
+                {% for i in range(0, 5 + 1) %}
+                    <option value="{{ i }}" {{ "selected" if i == 2 }}>{{ i }}</option>
+                {% endfor %}
+            </select>
+            <label for="symbols-after" data-shown-for="FIXED">Symbol(s) After:</label>
+            <select id="symbols-after" data-shown-for="FIXED">
+                {% for i in range(0, 5 + 1) %}
+                    <option value="{{ i }}" {{ "selected" if i == 2 }}>{{ i }}</option>
+                {% endfor %}
+            </select>
+            <br data-shown-for="FIXED ADAPTIVE" />
+            <label for="pad-char-type" data-shown-for="FIXED ADAPTIVE">Padding Character:</label>
+            <select id="pad-char-type" data-shown-for="FIXED ADAPTIVE">
+                <option value="SEPARATOR">Use Separator Character</option>
+                <option value="specified">Specified Character</option>
+                <option value="RANDOM" selected>Random Character</option>
+            </select>
+            <label for="pad-char" data-shown-for="FIXED ADAPTIVE" data-shown-for-sub="specified">Character:</label>
+            <input id="pad-char" data-shown-for="FIXED ADAPTIVE" type="text" size="1" maxlength="1" value="*" data-shown-for-sub="specified"/>
+            <br />
+            <label for="pad-alphabet" data-shown-for="FIXED ADAPTIVE" data-shown-for-sub="RANDOM">Padding Character Alphabet:</label>
+            <div class="inlineish" id="pad-alphabet" data-shown-for="FIXED ADAPTIVE" data-shown-for-sub="RANDOM">
+                {% for sep in default_seps %}
+                    <input type="text" size="1" maxlength="1" class="pad-alphabet-item" value="{{ sep }}"/>
+                {% endfor %}
+            </div>
+            <input type="button" value="+" data-shown-for="FIXED ADAPTIVE" data-shown-for-sub="RANDOM" onclick="add_textbox('pad-alphabet')" />
+        </details>
+
+        <details>
+            <summary>Load/Save Config</summary>
+            <input type="button" id="save-config" value="Save Config" onclick="save_config()">
+            <input type="button" id="load-config" value="Load Config" onclick="load_config()">
+            <textarea id="config-textarea"></textarea>
+            <div id="error"></div>
+        </details>
+    </fieldset>
+
+    <fieldset>
+        <legend>Generate Password(s)</legend>
+        <input type="button" id="generate-button" onclick="generate_passwords()" value="Generate Passwords" />
+        <label for="num-passwords">Num. Passwords:</label>
+        <select id="num-passwords">
+            {% for i in range(1, 10 + 1) %}
+                <option value="{{ i }}" {{ "selected" if i == 3 }}>{{ i }}</option>
+            {% endfor %}
+        </select>
+        <textarea readonly id="generated-passwords-textarea"></textarea>
+    </fieldset>
+
+    <fieldset>
+        <legend>API</legend>
+        <p>
+            You can use this as an API by sending a <code>POST</code> request to <code>{{ domain }}/api</code>
+            with the <code>Content-Type</code> header set to <code>application/json</code> and the JSON body
+            structured as below:
+        </p>
+        <pre>
+{
+    "n": 3, // the number of passwords to generate
+    "config": {
+        // your config, as shown under the Save/Load Config section
+    }
+}</pre>
+    </fieldset>
 </body>
 </html>

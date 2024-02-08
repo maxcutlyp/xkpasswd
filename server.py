@@ -62,9 +62,9 @@ app = flask.Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def index():
-    return flask.render_template('index.html')
+    return flask.render_template('index.html', default_seps = Config().separator_alphabet, domain = flask.request.url_root.rstrip('/'))
 
-@app.route('/api', methods=['GET'])
+@app.route('/api', methods=['POST'])
 def api():
     if flask.request.is_json:
         req_json = flask.request.json
@@ -76,6 +76,7 @@ def api():
     try: config_dict = req_json['config']
     except KeyError: config_dict = {}
 
+    print(config_dict)
     config = Config.from_dict(config_dict)
     return '\n'.join(generate_passwords(n, config))
 
@@ -93,19 +94,25 @@ def generate_password(config: Config):
     digits_before = ''.join([str(secrets.randbelow(10)) for _ in range(config.padding_digits_before)])
     digits_after = ''.join([str(secrets.randbelow(10)) for _ in range(config.padding_digits_after)])
 
-    if config.separator_character == SeparatorCharacter.NONE:
-        separator = lambda : ''
-    elif config.separator_character == SeparatorCharacter.RANDOM:
-        separator = lambda : secrets.choice(config.separator_alphabet)
-    else:
+    try:
+        config.separator_character = SeparatorCharacter(config.separator_character)
+    except ValueError:
         separator = lambda : config.separator_character
-
-    if config.padding_character == PaddingCharacter.SEPARATOR:
-        padding_character = separator
-    elif config.padding_character == PaddingCharacter.RANDOM:
-        padding_character = lambda : secrets.choice(config.symbol_alphabet)
     else:
+        if config.separator_character == SeparatorCharacter.NONE:
+            separator = lambda : ''
+        elif config.separator_character == SeparatorCharacter.RANDOM:
+            separator = lambda : secrets.choice(config.separator_alphabet)
+
+    try:
+        config.padding_character = PaddingCharacter(config.padding_character)
+    except ValueError:
         padding_character = lambda : config.padding_character
+    else:
+        if config.padding_character == PaddingCharacter.SEPARATOR:
+            padding_character = separator
+        elif config.padding_character == PaddingCharacter.RANDOM:
+            padding_character = lambda : secrets.choice(config.symbol_alphabet)
 
     if config.padding_type == PaddingType.NONE:
         padding_before = padding_after = ''
@@ -152,4 +159,4 @@ if __name__ == '__main__':
         wordlist = [line[:-1] for line in wl_file.readlines()]
         print(wordlist[-1])
 
-    app.run(debug=True)
+    app.run()
