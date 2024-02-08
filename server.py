@@ -60,6 +60,10 @@ class Config:
 
 app = flask.Flask(__name__)
 
+# you will probably need to change this depending on your configuration
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1, x_for=1)
+
 @app.route('/', methods=['GET'])
 def index():
     return flask.render_template('index.html', default_seps = Config().separator_alphabet, domain = flask.request.url_root.rstrip('/'))
@@ -159,4 +163,4 @@ if __name__ == '__main__':
         wordlist = [line[:-1] for line in wl_file.readlines()]
         print(wordlist[-1])
 
-    app.run()
+    app.run(port=9001)
