@@ -68,3 +68,7 @@ textarea {
     display: inline-flex;
     flex-flow: row;
 }
+
+[hidden] {
+    display: none;
+}
