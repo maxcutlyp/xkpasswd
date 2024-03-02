@@ -163,5 +163,19 @@
     }
 }</pre>
     </fieldset>
+
+    <fieldset>
+        <legend>Embed</legend>
+        <p>
+        You can embed this API (above) into another webpage by wrapping <code>{{ domain }}/embed</code> in an
+        <code>&lt;iframe&gt;</code>, with the query parameter <code>r</code> set to the URL encoded version of
+        the same JSON you would have used for the API. The passwords will be generated when the page loads.
+        </p>
+        <pre>&lt;iframe src="{{ domain }}/embed?r=your%20%json%20as%20above"&gt;&lt;/iframe&gt;</pre>
+        <p>
+        An easy way to URL encode a string is to use the <code>encodeURIComponent</code> function
+        in the JavaScript console (via dev tools).
+        </p>
+    </fieldset>
 </body>
 </html>

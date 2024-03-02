@@ -2,6 +2,7 @@ import flask
 
 import typing as t
 import secrets
+import json
 
 import enum
 from dataclasses import dataclass, field
@@ -83,6 +84,20 @@ def api():
     print(config_dict)
     config = Config.from_dict(config_dict)
     return '\n'.join(generate_passwords(n, config))
+
+@app.route('/embed', methods=['GET'])
+def embed():
+    try:
+        req_json = json.loads(flask.request.args['r'])
+        n = req_json['n']
+        config_dict = req_json['config']
+    except (KeyError, json.JSONDecodeError):
+        n = 3
+        config_dict = {}
+
+    print(config_dict)
+    config = Config.from_dict(config_dict)
+    return flask.render_template('embed.html', pws_str='\n'.join(generate_passwords(n, config)))
 
 def generate_passwords(
     n: int,
