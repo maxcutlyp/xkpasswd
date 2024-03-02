@@ -55,7 +55,7 @@ const load_config = () => {
         ['padding_digits_before', 'digits-before'],
         ['padding_digits_after', 'digits-after'],
         ['padding_type', 'pad-type'],
-        ['pad_to_length', 'pad-to-length'],
+        // pad_to_length
         // padding_character
         // symbol_alphabet
         ['padding_characters_before', 'symbols-before'],
@@ -74,6 +74,15 @@ const load_config = () => {
         }
 
         el.value = config[field]
+    }
+
+    if (config.padding_type === 'ADAPTIVE') {
+        if (config.pad_to_length === undefined) {
+            err_el.textContent = '"padding_type" is "ADAPTIVE" so "pad_to_length" must be supplied'
+            return
+        }
+
+        document.getElementById('pad-to-length').value = config.padding_type
     }
 
     if (!config.separator_character) {
