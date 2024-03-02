@@ -1,0 +1,11 @@
+[Unit]
+Description=xkpasswd
+After=network.target
+
+[Service]
+ExecStart=/bin/bash -c 'source ./bin/activate ; python server.py'
+WorkingDirectory=/var/www/xkpasswd
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
