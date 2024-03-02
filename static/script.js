@@ -1,6 +1,6 @@
 const update_shown = (id, attr_name) => {
     el = document.getElementById(id)
-    for (const child of el.parentElement.querySelectorAll(`[${attr_name}]`)) {
+    for (const child of el.closest('details').querySelectorAll(`[${attr_name}]`)) {
         if (child.getAttribute(attr_name).includes(el.value)) {
             child.removeAttribute('hidden')
         } else {

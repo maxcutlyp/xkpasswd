@@ -16,24 +16,32 @@
         <legend>Settings</legend>
         <details>
             <summary>Words</summary>
-            <label for="num-words">Number of Words:</label>
-            <select id="num-words">
-                {% for i in range(2, 10 + 1) %}
-                    <option value="{{ i }}" {{ "selected" if i == 3 }}>{{ i }}</option>
-                {% endfor %}
-            </select>
-            <label for="min-word-length">Minimum Length:</label>
-            <select id="min-word-length">
-                {% for i in range(4, 12 + 1) %}
-                    <option value="{{ i }}" {{ "selected" if i == 4 }}>{{ i }}</option>
-                {% endfor %}
-            </select>
-            <label for="max-word-length">Maximum Length:</label>
-            <select id="max-word-length">
-                {% for i in range(4, 12 + 1) %}
-                    <option value="{{ i }}" {{ "selected" if i == 8 }}>{{ i }}</option>
-                {% endfor %}
-            </select>
+            <div>
+                <div>
+                    <label for="num-words">Number of Words:</label>
+                    <select id="num-words">
+                        {% for i in range(2, 10 + 1) %}
+                            <option value="{{ i }}" {{ "selected" if i == 3 }}>{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="min-word-length">Minimum Length:</label>
+                    <select id="min-word-length">
+                        {% for i in range(4, 12 + 1) %}
+                            <option value="{{ i }}" {{ "selected" if i == 4 }}>{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="max-word-length">Maximum Length:</label>
+                    <select id="max-word-length">
+                        {% for i in range(4, 12 + 1) %}
+                            <option value="{{ i }}" {{ "selected" if i == 8 }}>{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
         </details>
 
         <details>
@@ -52,79 +60,109 @@
 
         <details>
             <summary>Separator</summary>
-            <label for="sep-type">Type:</label>
-            <select id="sep-type">
-                <option value="NONE">-none-</option>
-                <option value="specified">Specified Character</option>
-                <option value="RANDOM" selected>Random Character</option>
-            </select>
-            <br />
-            <label for="sep-alphabet" data-shown-for="RANDOM" class="break-before">Separator Alphabet:</label>
-            <div class="inlineish" id="sep-alphabet" data-shown-for="RANDOM">
-                {% for sep in default_seps %}
-                    <input type="text" size="1" maxlength="1" class="sep-alphabet-item" value="{{ sep }}"/>
-                {% endfor %}
+            <div>
+                <div>
+                    <label for="sep-type">Type:</label>
+                    <select id="sep-type">
+                        <option value="NONE">-none-</option>
+                        <option value="specified">Specified Character</option>
+                        <option value="RANDOM" selected>Random Character</option>
+                    </select>
+                </div>
+                <div br></div>
+                <div data-shown-for="RANDOM">
+                    <label for="sep-alphabet" class="break-before">Separator Alphabet:</label>
+                    <div class="inlineish" id="sep-alphabet">
+                        {% for sep in default_seps %}
+                            <input type="text" size="1" maxlength="1" class="sep-alphabet-item" value="{{ sep }}"/>
+                        {% endfor %}
+                    </div>
+                    <input type="button" value="+" onclick="add_textbox('sep-alphabet')" />
+                </div>
+                <div data-shown-for="specified">
+                    <label for="sep-char">Character:</label>
+                    <input id="sep-char" type="text" size="1" maxlength="1" value="-" />
+                </div>
             </div>
-            <input type="button" value="+" data-shown-for="RANDOM" onclick="add_textbox('sep-alphabet')" />
-            <label for="sep-char" data-shown-for="specified">Character:</label>
-            <input id="sep-char" type="text" size="1" maxlength="1" value="-" data-shown-for="specified"/>
         </details>
 
         <details>
             <summary>Padding Digits</summary>
-            <label for="digits-before">Digit(s) Before:</label>
-            <select id="digits-before">
-                {% for i in range(0, 5 + 1) %}
-                    <option value="{{ i }}" {{ "selected" if i == 2 }}>{{ i }}</option>
-                {% endfor %}
-            </select>
-            <label for="digits-after">Digit(s) After:</label>
-            <select id="digits-after">
-                {% for i in range(0, 5 + 1) %}
-                    <option value="{{ i }}" {{ "selected" if i == 2 }}>{{ i }}</option>
-                {% endfor %}
-            </select>
+            <div>
+                <div>
+                    <label for="digits-before">Digit(s) Before:</label>
+                    <select id="digits-before">
+                        {% for i in range(0, 5 + 1) %}
+                            <option value="{{ i }}" {{ "selected" if i == 2 }}>{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="digits-after">Digit(s) After:</label>
+                    <select id="digits-after">
+                        {% for i in range(0, 5 + 1) %}
+                            <option value="{{ i }}" {{ "selected" if i == 2 }}>{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
         </details>
 
         <details>
             <summary>Padding Symbols</summary>
-            <label for="pad-type">Padding Type:</label>
-            <select id="pad-type">
-                <option value="NONE">-none-</option>
-                <option value="FIXED" selected>Fixed</option>
-                <option value="ADAPTIVE">Adaptive</option>
-            </select>
-            <label for="pad-to-length" data-shown-for="ADAPTIVE">Pad to Length:</label>
-            <input type="number" data-shown-for="ADAPTIVE" id="pad-to-length" value="32" size="3" min="8" max="999">
-            <label for="symbols-before" data-shown-for="FIXED">Symbol(s) Before:</label>
-            <select id="symbols-before" data-shown-for="FIXED">
-                {% for i in range(0, 5 + 1) %}
-                    <option value="{{ i }}" {{ "selected" if i == 2 }}>{{ i }}</option>
-                {% endfor %}
-            </select>
-            <label for="symbols-after" data-shown-for="FIXED">Symbol(s) After:</label>
-            <select id="symbols-after" data-shown-for="FIXED">
-                {% for i in range(0, 5 + 1) %}
-                    <option value="{{ i }}" {{ "selected" if i == 2 }}>{{ i }}</option>
-                {% endfor %}
-            </select>
-            <br data-shown-for="FIXED ADAPTIVE" />
-            <label for="pad-char-type" data-shown-for="FIXED ADAPTIVE">Padding Character:</label>
-            <select id="pad-char-type" data-shown-for="FIXED ADAPTIVE">
-                <option value="SEPARATOR">Use Separator Character</option>
-                <option value="specified">Specified Character</option>
-                <option value="RANDOM" selected>Random Character</option>
-            </select>
-            <label for="pad-char" data-shown-for="FIXED ADAPTIVE" data-shown-for-sub="specified">Character:</label>
-            <input id="pad-char" data-shown-for="FIXED ADAPTIVE" type="text" size="1" maxlength="1" value="*" data-shown-for-sub="specified"/>
-            <br />
-            <label for="pad-alphabet" data-shown-for="FIXED ADAPTIVE" data-shown-for-sub="RANDOM">Padding Character Alphabet:</label>
-            <div class="inlineish" id="pad-alphabet" data-shown-for="FIXED ADAPTIVE" data-shown-for-sub="RANDOM">
-                {% for sep in default_seps %}
-                    <input type="text" size="1" maxlength="1" class="pad-alphabet-item" value="{{ sep }}"/>
-                {% endfor %}
+            <div>
+                <div>
+                    <label for="pad-type">Padding Type:</label>
+                    <select id="pad-type">
+                        <option value="NONE">-none-</option>
+                        <option value="FIXED" selected>Fixed</option>
+                        <option value="ADAPTIVE">Adaptive</option>
+                    </select>
+                </div>
+                <div data-shown-for="ADAPTIVE">
+                    <label for="pad-to-length">Pad to Length:</label>
+                    <input type="number" id="pad-to-length" value="32" size="3" min="8" max="999">
+                </div>
+                <div data-shown-for="FIXED">
+                    <label for="symbols-before">Symbol(s) Before:</label>
+                    <select id="symbols-before">
+                        {% for i in range(0, 5 + 1) %}
+                            <option value="{{ i }}" {{ "selected" if i == 2 }}>{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div data-shown-for="FIXED">
+                    <label for="symbols-after">Symbol(s) After:</label>
+                    <select id="symbols-after">
+                        {% for i in range(0, 5 + 1) %}
+                            <option value="{{ i }}" {{ "selected" if i == 2 }}>{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div br data-shown-for="FIXED ADAPTIVE"></div>
+                <div data-shown-for="FIXED ADAPTIVE">
+                    <label for="pad-char-type">Padding Character:</label>
+                    <select id="pad-char-type">
+                        <option value="SEPARATOR">Use Separator Character</option>
+                        <option value="specified">Specified Character</option>
+                        <option value="RANDOM" selected>Random Character</option>
+                    </select>
+                </div>
+                <div data-shown-for="FIXED ADAPTIVE" data-shown-for-sub="specified">
+                    <label for="pad-char">Character:</label>
+                    <input id="pad-char" type="text" size="1" maxlength="1" value="*" />
+                </div>
+                <div br data-shown-for="FIXED ADAPTIVE"></div>
+                <div data-shown-for="FIXED ADAPTIVE" data-shown-for-sub="RANDOM">
+                    <label for="pad-alphabet">Padding Character Alphabet:</label>
+                    <div class="inlineish" id="pad-alphabet">
+                        {% for sep in default_seps %}
+                            <input type="text" size="1" maxlength="1" class="pad-alphabet-item" value="{{ sep }}"/>
+                        {% endfor %}
+                    </div>
+                    <input type="button" value="+" onclick="add_textbox('pad-alphabet')" />
+                </div>
             </div>
-            <input type="button" value="+" data-shown-for="FIXED ADAPTIVE" data-shown-for-sub="RANDOM" onclick="add_textbox('pad-alphabet')" />
         </details>
 
         <details>
